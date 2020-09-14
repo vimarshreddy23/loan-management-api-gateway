@@ -25,6 +25,14 @@ public class ZuulLoggingFilter extends ZuulFilter{
 	public Object run() throws ZuulException {
 		HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
 		logger.info("request --> {} request URI {}", request, request.getRequestURI());
+		  RequestContext ctx = RequestContext.getCurrentContext();
+	        
+	         // Add a custom header in the request
+	        ctx.addZuulRequestHeader("Authorization",
+	                 request.getHeader("Authorization"));
+	        logger.info(String.format("%s request to %s", request.getMethod(), 
+	                 request.getRequestURL().toString()));
+	        
 		return null;
 	}
 
