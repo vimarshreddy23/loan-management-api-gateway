@@ -1,5 +1,7 @@
 package com.loan.managment.netflixzuulapigatewayserver.security;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 
@@ -20,7 +25,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable()
+		http.csrf().disable().cors().and()
 				// make sure we use stateless session; session won't be used to store user's
 				// state.
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -37,6 +42,17 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 				// Any other request must be authenticated
 				.anyRequest().authenticated();
 	}
+	
+	@Bean
+    CorsConfigurationSource corsConfigurationSource() 
+    {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 	@Bean
 	public JwtConfig jwtConfig() {
